@@ -1,0 +1,44 @@
+﻿<Window x:Class="GSB.GestionFrais"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GestionFrais"
+        mc:Ignorable="d"
+        Title="GestionFrais" Height="835" Width="1136">
+    <Grid x:Name="mainGrid" Margin="0,0,0,-1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="340*"/>
+                <RowDefinition Height="43*"/>
+
+            </Grid.RowDefinitions>
+            <TextBox x:Name="textBox" TextWrapping="Wrap" Grid.Row="0"  Margin="10,9,0,0" HorizontalAlignment="Left" Width="121" Height="25" VerticalAlignment="Top"/>
+            <ComboBox x:Name="comboBox" ItemsSource="{Binding ListMois, Mode=OneWay}" SelectedItem="{Binding SelectedMois}" Margin="169,9,0,0" Grid.Row="0" IsEditable="True" IsReadOnly="True" Text="-- mois --" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Width="120" Height="25" VerticalAlignment="Top"/>
+            <ListBox x:Name="ListBox" ItemsSource="{Binding ListFicheFrais}" SelectedItem="{Binding SelectedFiche}" Margin="10" Grid.Row="1" FontSize="15"/>
+            <Button x:Name="btnSuivrePaiement" Content="Suivre le paiement" Margin="10,5,0,0" Grid.Row="2" HorizontalAlignment="Left" Width="121" Height="22" VerticalAlignment="Top"/>
+            <Button x:Name="btnValiderFiche" Content="Valider la fiche" Margin="10,42,0,0" Grid.Row="2" HorizontalAlignment="Left" Width="93" Height="22" VerticalAlignment="Top"/>
+        </Grid>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="2.5*"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Label x:Name="lblFraisForfaitisés" Content="Frais forfaitisés" Margin="229,10,0,0" Grid.Row="0" FontSize="15" HorizontalAlignment="Left" Width="109" Height="30" VerticalAlignment="Top"/>
+            <DataGrid x:Name="dataGrid1" Margin="10" Grid.Row="1" ItemsSource="{Binding ListLignesFraisForfait}"/>
+            <Label x:Name="lblFraisHorsForfait" Content="Frais hors forfaits" Grid.Row="2" FontSize="15" Margin="215,0,0,0" HorizontalAlignment="Left" Width="140" Height="30" VerticalAlignment="Top"/>
+            <DataGrid x:Name="dataGrid2" Margin="10,10,10,0" Grid.Row="3" RenderTransformOrigin="3.167,1.077" ItemsSource="{Binding ListLignesFraisHorsForfait}"/>
+            <Button x:Name="btnEnregistrer" Command="{Binding UpdateFicheFrais}" Content="Enregistrer les modifications" Margin="10,10,0,0" Grid.Row="4" HorizontalAlignment="Left" Width="163" Height="22" VerticalAlignment="Top"/>
+            <Button x:Name="btnRefuserLigne" Content="Refuser la ligne" Margin="181,10,0,0" Grid.Row="4" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="94"/>
+            <Button x:Name="btnReporter" Content="Reporter" Margin="280,10,0,0" Grid.Row="4" HorizontalAlignment="Left" Width="75" Height="22" VerticalAlignment="Top"/>
+        </Grid>
+    </Grid>
+</Window>
