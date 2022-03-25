@@ -21,11 +21,6 @@ namespace GestionFrais.ViewModel
 
         private string selectedMois;
         private FicheFrais selectedFiche;
-        private LigneFraisForfait toUpdateLigneFraisForfait;
-        private LigneFraisHorsForfait toUpdateLigneFraisHorsForfait;
-        private LigneFraisForfait activeLigneFraisForfait;
-        private LigneFraisHorsForfait activeLigneFraisHorsForfait;
-
 
         private ICommand updateFicheFrais;
 
@@ -94,96 +89,36 @@ namespace GestionFrais.ViewModel
             {
                 if (this.updateFicheFrais == null)
                 {
-                    this.updateFicheFrais = new RelayCommand(() => UpdateLaFicheFrais(), () => true);
+                    this.updateFicheFrais = new RelayCommand(() => UpdateLigneFraisForfait(), () => true);
                 }
                 return this.updateFicheFrais;
-            }
-        }
-
-        public LigneFraisForfait ToUpdateLigneFraisForfait
-        {
-            get
-            {
-                return toUpdateLigneFraisForfait;
-            }
-
-            set
-            {
-                toUpdateLigneFraisForfait = value;
-            }
-        }
-
-        public LigneFraisHorsForfait ToUpdateLigneFraisHorsForfait
-        {
-            get
-            {
-                return toUpdateLigneFraisHorsForfait;
-            }
-
-            set
-            {
-                toUpdateLigneFraisHorsForfait = value;
-            }
-        }
-
-        public LigneFraisForfait ActiveLigneFraisForfait
-        {
-            get
-            {
-                return activeLigneFraisForfait;
-            }
-
-            set
-            {
-                if (activeLigneFraisForfait != value)
-                {
-                    activeLigneFraisForfait = value;
-                    OnPropertyChanged("ListLignesFraisForfait");
-                }
-            }
-        }
-
-        public LigneFraisHorsForfait ActiveLigneFraisHorsForfait
-        {
-            get
-            {
-                return activeLigneFraisHorsForfait;
-            }
-
-            set
-            {
-                if (activeLigneFraisHorsForfait != value)
-                {
-                    activeLigneFraisHorsForfait = value;
-                    OnPropertyChanged("ListLignesFraisForfait");
-                }
             }
         }
 
         public ViewModelGestionFrais(DaoFicheFrais thedaoFicheFrais, DaoFraisForfait thedaoFraisForfait, DaoLigneFraisForfait thedaoLigneFraisForfait, DaoLigneFraisHorsForfait thedaoLigneFraisHorsForfait)
         {
             vmDaoFicheFrais = thedaoFicheFrais;
+            vmDaoLigneFraisForfait = thedaoLigneFraisForfait;
+            vmDaoLigneFraisHorsForfait = thedaoLigneFraisHorsForfait;
 
             listMois = new ObservableCollection<string>(thedaoFicheFrais.SelectListMois());
             listFicheFrais = new ObservableCollection<FicheFrais>(thedaoFicheFrais.SelectAll());
         }
 
-        private void UpdateLaFicheFrais()
+        private void UpdateLigneFraisForfait()
         {
-
-            ToUpdateLigneFraisForfait = ActiveLigneFraisForfait;
-            ToUpdateLigneFraisHorsForfait = ActiveLigneFraisHorsForfait;
-            this.vmDaoLigneFraisForfait.Update(ToUpdateLigneFraisForfait);
-            this.vmDaoLigneFraisHorsForfait.Update(ToUpdateLigneFraisHorsForfait);
-            var i = listLignesFraisForfait.IndexOf(ToUpdateLigneFraisForfait);
-            var ii = listLignesFraisHorsForfait.IndexOf(ToUpdateLigneFraisHorsForfait);
-            listLignesFraisForfait.RemoveAt(i);
-            listLignesFraisHorsForfait.RemoveAt(ii);
-            listLignesFraisForfait.Insert(i, ToUpdateLigneFraisForfait);
-            listLignesFraisHorsForfait.Insert(ii, ToUpdateLigneFraisHorsForfait);
-            SelectedFiche = vmDaoFicheFrais.SelectById(ToUpdateLigneFraisForfait.IdVisiteur, ToUpdateLigneFraisForfait.Mois);
-
-
+            if(selectedFiche != null)
+            {
+                foreach (LigneFraisForfait lff in ListLignesFraisForfait)
+                {
+                    vmDaoLigneFraisForfait.Update(lff);
+                }
+                foreach (LigneFraisHorsForfait lfhf in ListLignesFraisHorsForfait)
+                {
+                    vmDaoLigneFraisHorsForfait.Update(lfhf);
+                }
+            }
+            
         }
 
     }
