@@ -54,7 +54,7 @@ namespace GSBFraisModel.Buisness
             }
         }
 
-        internal Etat UnEtat
+        public Etat UnEtat
         {
             get
             {

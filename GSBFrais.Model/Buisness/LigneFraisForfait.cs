@@ -10,24 +10,24 @@ namespace GSBFraisModel.Buisness
     {
         private FicheFrais ficheFrais;
         private string idVisiteur;
-        private string idFraitForfait;
+        private string idFraisForfait;
         private string mois;
         private int quantite;
 
-        public LigneFraisForfait(string unIdVisiteur, string unMois,string unIdFraitForfait , int uneQuantite, FicheFrais uneFicheFrais)
+        public LigneFraisForfait(string unIdVisiteur, string unMois,string unIdFraisForfait , int uneQuantite, FicheFrais uneFicheFrais)
         {
             this.idVisiteur = unIdVisiteur;
             this.mois = unMois;
-            this.idFraitForfait = unIdFraitForfait;
+            this.idFraisForfait = unIdFraisForfait;
             this.quantite = uneQuantite;
             this.FicheFrais = uneFicheFrais;
         }
 
-        public LigneFraisForfait(string unIdVisiteur, string unMois, string unIdFraitForfait, int uneQuantite)
+        public LigneFraisForfait(string unIdVisiteur, string unMois, string unIdFraisForfait, int uneQuantite)
         {
             this.idVisiteur = unIdVisiteur;
             this.mois = unMois;
-            this.idFraitForfait = unIdFraitForfait;
+            this.idFraisForfait = unIdFraisForfait;
             this.quantite = uneQuantite;
         }
 
@@ -70,16 +70,16 @@ namespace GSBFraisModel.Buisness
             }
         }
 
-        public string IdFraitForfait
+        public string IdFraisForfait
         {
             get
             {
-                return idFraitForfait;
+                return idFraisForfait;
             }
 
             set
             {
-                idFraitForfait = value;
+                idFraisForfait = value;
             }
         }
 

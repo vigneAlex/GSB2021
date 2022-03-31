@@ -40,7 +40,13 @@ namespace GSBFraisModel.Data
 
         public void Update(FicheFrais theFicheFrais)
         {
-            string query = "FicheFrais SET mois='" + theFicheFrais.Mois + "', nbJustificatifs='" + theFicheFrais.NbJustificatifs + "',montantValide ='" + theFicheFrais.MontantValide + "',dateModif ='" + theFicheFrais.DateModif + "',adresse='" + "';";
+            string montant = theFicheFrais.MontantValide.ToString();
+            string query = "FicheFrais SET nbJustificatifs= " + theFicheFrais.NbJustificatifs
+                + ",montantValide = " + montant.Replace(",", ".")
+                + ",dateModif = '" + theFicheFrais.DateModif.ToString("yyyy-MM-dd")
+                + "',idEtat= '" + theFicheFrais.UnEtat.Id
+                + "' WHERE idVisiteur = '" + theFicheFrais.UnVisiteur.Id.Replace("'", "''")
+                + "' AND mois= '" + theFicheFrais.Mois.Replace("'", "''") + "'";
             this.thedbal.Update(query);
         }
 

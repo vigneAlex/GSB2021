@@ -15,12 +15,16 @@ namespace GestionFrais.ViewModel
         private ObservableCollection<Visiteur> listVisiteurs;
         private ObservableCollection<FicheFrais> listFicheFrais;
         private ObservableCollection<string> listMois;
+        private ObservableCollection<string> listEtat;
         private ObservableCollection<FraisForfait> listFraisForfait;
         private ObservableCollection<LigneFraisForfait> listLignesFraisForfait;
         private ObservableCollection<LigneFraisHorsForfait> listLignesFraisHorsForfait;
 
+        private string suiviEtat;
         private string selectedMois;
         private FicheFrais selectedFiche;
+        private Etat selectedEtat;
+        private string idEtat;
 
         private ICommand updateFicheFrais;
 
@@ -30,15 +34,15 @@ namespace GestionFrais.ViewModel
         private DaoLigneFraisForfait vmDaoLigneFraisForfait;
         private DaoVisiteurs vmDaoVisiteur;
         private DaoLigneFraisHorsForfait vmDaoLigneFraisHorsForfait;
-
         public ObservableCollection<Visiteur> ListVisiteurs { get { return listVisiteurs; } set { listVisiteurs = value; } }
         public ObservableCollection<FicheFrais> ListFicheFrais { get { return listFicheFrais; } set { listFicheFrais = value; } }
         public ObservableCollection<string> ListMois { get { return listMois; } set { listMois = value; } }
+        public ObservableCollection<string> ListEtat { get { return listEtat; } set { listEtat = value; } }
 
         public ObservableCollection<FraisForfait> ListFraisForfait { get { return listFraisForfait; } set { listFraisForfait = value; } }
-        public ObservableCollection<LigneFraisForfait> ListLignesFraisForfait { get { return listLignesFraisForfait; } set { listLignesFraisForfait = value; } }
+        public ObservableCollection<LigneFraisForfait> ListLignesFraisForfait { get { return listLignesFraisForfait; } set { listLignesFraisForfait = value;} }
 
-        public ObservableCollection<LigneFraisHorsForfait> ListLignesFraisHorsForfait { get { return listLignesFraisHorsForfait; } set { listLignesFraisHorsForfait = value; } }
+        public ObservableCollection<LigneFraisHorsForfait> ListLignesFraisHorsForfait { get { return listLignesFraisHorsForfait; } set { listLignesFraisHorsForfait = value;} }
 
         public string SelectedMois
         {
@@ -70,16 +74,20 @@ namespace GestionFrais.ViewModel
                 OnPropertyChanged("SelectedFiche");
                 if(selectedFiche != null)
                 {
+                    SuiviEtat = selectedFiche.UnEtat.Libelle;
                     listLignesFraisForfait = new ObservableCollection<LigneFraisForfait>(selectedFiche.LesLigneFraisForfait);
                     listLignesFraisHorsForfait = new ObservableCollection<LigneFraisHorsForfait>(selectedFiche.LesLigneFraisHorsForfait);
+                    OnPropertyChanged("ListLignesFraisForfait");
+                    OnPropertyChanged("ListLignesFraisHorsForfait");
+                    OnPropertyChanged("SuiviEtat");
                 }
                 else
                 {
                     listLignesFraisForfait = null;
                     listLignesFraisHorsForfait = null;
+                    OnPropertyChanged("ListLignesFraisForfait");
+                    OnPropertyChanged("ListLignesFraisHorsForfait");
                 }        
-                OnPropertyChanged("ListLignesFraisForfait");
-                OnPropertyChanged("ListLignesFraisHorsForfait");
             }
         }
 
@@ -89,26 +97,71 @@ namespace GestionFrais.ViewModel
             {
                 if (this.updateFicheFrais == null)
                 {
-                    this.updateFicheFrais = new RelayCommand(() => UpdateLigneFraisForfait(), () => true);
+                    this.updateFicheFrais = new RelayCommand(() => UpdateLesFichesFrais(), () => true);
                 }
                 return this.updateFicheFrais;
             }
         }
 
-        public ViewModelGestionFrais(DaoFicheFrais thedaoFicheFrais, DaoFraisForfait thedaoFraisForfait, DaoLigneFraisForfait thedaoLigneFraisForfait, DaoLigneFraisHorsForfait thedaoLigneFraisHorsForfait)
+        public string SuiviEtat
+        {
+            get
+            {
+                return suiviEtat;
+            }
+
+            set
+            {
+                suiviEtat = value;
+            }
+        }
+
+        public Etat SelectedEtat
+        {
+            get
+            {
+                return selectedEtat;
+            }
+
+            set
+            {
+                selectedEtat = value;
+                OnPropertyChanged("SelectedEtat");
+
+            }
+        }
+
+        private void TrackThePayment()
+        {
+            if (selectedFiche != null)
+            {
+                SuiviEtat = selectedFiche.UnEtat.Libelle;
+                OnPropertyChanged("SuiviEtat");
+
+            }
+        }
+
+        public ViewModelGestionFrais(DaoFicheFrais thedaoFicheFrais, DaoFraisForfait thedaoFraisForfait, DaoLigneFraisForfait thedaoLigneFraisForfait, DaoLigneFraisHorsForfait thedaoLigneFraisHorsForfait, DaoEtat theDaoEtat)
         {
             vmDaoFicheFrais = thedaoFicheFrais;
             vmDaoLigneFraisForfait = thedaoLigneFraisForfait;
             vmDaoLigneFraisHorsForfait = thedaoLigneFraisHorsForfait;
+            vmDaoEtat = theDaoEtat;
 
+            listEtat = new ObservableCollection<string>(theDaoEtat.SelectListEtat());
             listMois = new ObservableCollection<string>(thedaoFicheFrais.SelectListMois());
             listFicheFrais = new ObservableCollection<FicheFrais>(thedaoFicheFrais.SelectAll());
         }
 
-        private void UpdateLigneFraisForfait()
+        private void UpdateLesFichesFrais()
         {
             if(selectedFiche != null)
             {
+                if (selectedEtat != null)
+                {
+                    selectedFiche.UnEtat.Id = selectedEtat.Id;
+                }
+                vmDaoFicheFrais.Update(selectedFiche);
                 foreach (LigneFraisForfait lff in ListLignesFraisForfait)
                 {
                     vmDaoLigneFraisForfait.Update(lff);
