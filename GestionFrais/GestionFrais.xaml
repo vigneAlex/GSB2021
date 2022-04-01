@@ -34,7 +34,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Label x:Name="lblFraisForfaitisés" Content="Frais forfaitisés" Margin="229,10,0,0" Grid.Row="0" FontSize="15" HorizontalAlignment="Left" Width="109" Height="30" VerticalAlignment="Top"/>
-            <DataGrid x:Name="dataGrid1" SelectionMode="Single" AutoGenerateColumns="False" Margin="10" Grid.Row="1" ItemsSource="{Binding ListLignesFraisForfait}">
+            <DataGrid x:Name="dataGrid1" SelectionMode="Single" SelectedItem="{Binding SelectedLigneFraisForfait}" AutoGenerateColumns="False" Margin="10" Grid.Row="1" ItemsSource="{Binding ListLignesFraisForfait}">
                 <DataGrid.Columns>
                     <DataGridTextColumn IsReadOnly="True" Header="Mois" Binding="{Binding Mois}"/>
                     <DataGridTextColumn IsReadOnly="True" Header="IdFraisForfait" Binding="{Binding IdFraisForfait}"/>
@@ -42,7 +42,7 @@
                 </DataGrid.Columns>
             </DataGrid>
             <Label x:Name="lblFraisHorsForfait" Content="Frais hors forfaits" Grid.Row="2" FontSize="15" Margin="215,0,0,0" HorizontalAlignment="Left" Width="140" Height="30" VerticalAlignment="Top"/>
-            <DataGrid x:Name="dataGrid2" SelectionMode="Single" AutoGenerateColumns="False" Margin="10,10,10,0" Grid.Row="3" RenderTransformOrigin="3.167,1.077" ItemsSource="{Binding ListLignesFraisHorsForfait}">
+            <DataGrid x:Name="dataGrid2" SelectionMode="Single" SelectedItem="{Binding SelectedLigneFraisHorsForfait}" AutoGenerateColumns="False" Margin="10,10,10,0" Grid.Row="3" RenderTransformOrigin="3.167,1.077" ItemsSource="{Binding ListLignesFraisHorsForfait}">
                 <DataGrid.Columns>
                     <DataGridTextColumn IsReadOnly="True" Header="Date" Binding="{Binding Date, StringFormat=\{0:dd.MM.yyyy\}}"/>
                     <DataGridTextColumn IsReadOnly="True" Header="Libelle" Binding="{Binding Libelle}"/>
@@ -50,7 +50,7 @@
                 </DataGrid.Columns>
             </DataGrid>
             <Button x:Name="btnEnregistrer" Command="{Binding UpdateFicheFrais}" Content="Enregistrer les modifications" Margin="10,10,0,0" Grid.Row="4" HorizontalAlignment="Left" Width="163" Height="22" VerticalAlignment="Top"/>
-            <Button x:Name="btnRefuserLigne" Content="Refuser la ligne" Margin="181,10,0,0" Grid.Row="4" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="94"/>
+            <Button x:Name="btnRefuserLigne" Command="{Binding RefusLigne}" Content="Refuser la ligne" Margin="181,10,0,0" Grid.Row="4" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="94"/>
             <Button x:Name="btnReporter" Content="Reporter" Margin="280,10,0,0" Grid.Row="4" HorizontalAlignment="Left" Width="75" Height="22" VerticalAlignment="Top"/>
         </Grid>
     </Grid>

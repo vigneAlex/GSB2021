@@ -23,10 +23,13 @@ namespace GestionFrais.ViewModel
         private string suiviEtat;
         private string selectedMois;
         private FicheFrais selectedFiche;
+        private LigneFraisForfait selectedLigneFraisForfait;
+        private LigneFraisHorsForfait selectedLigneFraisHorsForfait;
         private Etat selectedEtat;
         private string idEtat;
 
         private ICommand updateFicheFrais;
+        private ICommand refusLigne;
 
         private DaoEtat vmDaoEtat;
         private DaoFicheFrais vmDaoFicheFrais;
@@ -91,6 +94,53 @@ namespace GestionFrais.ViewModel
             }
         }
 
+        public Etat SelectedEtat
+        {
+            get
+            {
+                return selectedEtat;
+            }
+
+            set
+            {
+                selectedEtat = value;
+                OnPropertyChanged("SelectedEtat");
+
+            }
+        }
+
+        public LigneFraisForfait SelectedLigneFraisForfait
+        {
+            get
+            {
+                return selectedLigneFraisForfait;
+            }
+
+            set
+            {
+                selectedLigneFraisForfait = value;
+                OnPropertyChanged("SelectedLigneFraisForfait");
+                selectedLigneFraisHorsForfait = null;
+                OnPropertyChanged("SelectedLigneFraisHorsForfait");
+            }
+        }
+
+        public LigneFraisHorsForfait SelectedLigneFraisHorsForfait
+        {
+            get
+            {
+                return selectedLigneFraisHorsForfait;
+            }
+
+            set
+            {
+                selectedLigneFraisHorsForfait = value;
+                OnPropertyChanged("SelectedLigneFraisHorsForfait");
+                selectedLigneFraisForfait = null;
+                OnPropertyChanged("SelectedLigneFraisForfait");
+            }
+        }
+
         public ICommand UpdateFicheFrais
         {
             get
@@ -100,6 +150,18 @@ namespace GestionFrais.ViewModel
                     this.updateFicheFrais = new RelayCommand(() => UpdateLesFichesFrais(), () => true);
                 }
                 return this.updateFicheFrais;
+            }
+        }
+
+        public ICommand RefusLigne
+        {
+            get
+            {
+                if (this.refusLigne == null)
+                {
+                    this.refusLigne = new RelayCommand(() => RefuserLaLigne(), () => true);
+                }
+                return this.refusLigne;
             }
         }
 
@@ -116,20 +178,7 @@ namespace GestionFrais.ViewModel
             }
         }
 
-        public Etat SelectedEtat
-        {
-            get
-            {
-                return selectedEtat;
-            }
-
-            set
-            {
-                selectedEtat = value;
-                OnPropertyChanged("SelectedEtat");
-
-            }
-        }
+        
 
         public ViewModelGestionFrais(DaoFicheFrais thedaoFicheFrais, DaoFraisForfait thedaoFraisForfait, DaoLigneFraisForfait thedaoLigneFraisForfait, DaoLigneFraisHorsForfait thedaoLigneFraisHorsForfait, DaoEtat theDaoEtat)
         {
@@ -162,6 +211,24 @@ namespace GestionFrais.ViewModel
                 {
                     vmDaoLigneFraisHorsForfait.Update(lfhf);
                 }
+            }
+            
+        }
+
+        private void RefuserLaLigne()
+        {
+            if (selectedLigneFraisForfait != null && selectedLigneFraisHorsForfait == null)
+            {
+                vmDaoLigneFraisForfait.Delete(selectedLigneFraisForfait);
+                ListLignesFraisForfait.Remove(selectedLigneFraisForfait);
+                selectedFiche.LesLigneFraisForfait = new List<LigneFraisForfait>(ListLignesFraisForfait);
+
+            }
+            else if (selectedLigneFraisHorsForfait != null && selectedLigneFraisForfait == null)
+            {
+                vmDaoLigneFraisHorsForfait.Delete(selectedLigneFraisHorsForfait);
+                ListLignesFraisHorsForfait.Remove(selectedLigneFraisHorsForfait);
+                selectedFiche.LesLigneFraisHorsForfait = new List<LigneFraisHorsForfait>(ListLignesFraisHorsForfait);
             }
             
         }
