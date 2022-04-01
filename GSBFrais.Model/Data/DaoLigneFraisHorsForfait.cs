@@ -30,7 +30,8 @@ namespace GSBFraisModel.Data
             string query = "lignefraishorsforfait SET libelle = '" + LigneFraisHorsForfait.Libelle.Replace("'", "''") + "' "
             +", date = '" + LigneFraisHorsForfait.Date.ToString("yyyy-MM-dd")
             +"', montant = " + montant.Replace(",", ".")
-            +" WHERE id = " + LigneFraisHorsForfait.Id;
+            +", mois = '" + LigneFraisHorsForfait.Mois 
+            +"' WHERE id = " + LigneFraisHorsForfait.Id;
             this.unDbal.Update(query);
         }
 
