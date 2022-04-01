@@ -63,15 +63,15 @@ namespace GSBFraisModel.Data
             return new Etat((string)result["id"], (string)result["libelle"]);
         }
 
-        public List<string> SelectListEtat()
+        public List<Etat> SelectListEtat()
         {
-            List<string> listEtat = new List<string>();
-            string query = "DISTINCT(libelle) FROM Etat";
+            List<Etat> listEtat = new List<Etat>();
+            string query = "id,libelle FROM Etat";
             DataTable myTable = this.unDbal.Select(query);
 
             foreach (DataRow r in myTable.Rows)
             {
-                listEtat.Add((string)r["Libelle"]);
+                listEtat.Add(new Etat((string)r["id"], (string)r["libelle"]));
             }
             return listEtat;
         }

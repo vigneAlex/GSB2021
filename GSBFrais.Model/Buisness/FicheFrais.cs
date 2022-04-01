@@ -28,7 +28,7 @@ namespace GSBFraisModel.Buisness
             this.unEtat = unEtat;
         }
 
-        internal Visiteur UnVisiteur
+        public Visiteur UnVisiteur
         {
             get
             {

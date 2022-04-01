@@ -15,7 +15,7 @@ namespace GestionFrais.ViewModel
         private ObservableCollection<Visiteur> listVisiteurs;
         private ObservableCollection<FicheFrais> listFicheFrais;
         private ObservableCollection<string> listMois;
-        private ObservableCollection<string> listEtat;
+        private ObservableCollection<Etat> listEtat;
         private ObservableCollection<FraisForfait> listFraisForfait;
         private ObservableCollection<LigneFraisForfait> listLignesFraisForfait;
         private ObservableCollection<LigneFraisHorsForfait> listLignesFraisHorsForfait;
@@ -37,7 +37,7 @@ namespace GestionFrais.ViewModel
         public ObservableCollection<Visiteur> ListVisiteurs { get { return listVisiteurs; } set { listVisiteurs = value; } }
         public ObservableCollection<FicheFrais> ListFicheFrais { get { return listFicheFrais; } set { listFicheFrais = value; } }
         public ObservableCollection<string> ListMois { get { return listMois; } set { listMois = value; } }
-        public ObservableCollection<string> ListEtat { get { return listEtat; } set { listEtat = value; } }
+        public ObservableCollection<Etat> ListEtat { get { return listEtat; } set { listEtat = value; } }
 
         public ObservableCollection<FraisForfait> ListFraisForfait { get { return listFraisForfait; } set { listFraisForfait = value; } }
         public ObservableCollection<LigneFraisForfait> ListLignesFraisForfait { get { return listLignesFraisForfait; } set { listLignesFraisForfait = value;} }
@@ -131,16 +131,6 @@ namespace GestionFrais.ViewModel
             }
         }
 
-        private void TrackThePayment()
-        {
-            if (selectedFiche != null)
-            {
-                SuiviEtat = selectedFiche.UnEtat.Libelle;
-                OnPropertyChanged("SuiviEtat");
-
-            }
-        }
-
         public ViewModelGestionFrais(DaoFicheFrais thedaoFicheFrais, DaoFraisForfait thedaoFraisForfait, DaoLigneFraisForfait thedaoLigneFraisForfait, DaoLigneFraisHorsForfait thedaoLigneFraisHorsForfait, DaoEtat theDaoEtat)
         {
             vmDaoFicheFrais = thedaoFicheFrais;
@@ -148,7 +138,7 @@ namespace GestionFrais.ViewModel
             vmDaoLigneFraisHorsForfait = thedaoLigneFraisHorsForfait;
             vmDaoEtat = theDaoEtat;
 
-            listEtat = new ObservableCollection<string>(theDaoEtat.SelectListEtat());
+            listEtat = new ObservableCollection<Etat>(theDaoEtat.SelectListEtat());
             listMois = new ObservableCollection<string>(thedaoFicheFrais.SelectListMois());
             listFicheFrais = new ObservableCollection<FicheFrais>(thedaoFicheFrais.SelectAll());
         }
@@ -159,7 +149,9 @@ namespace GestionFrais.ViewModel
             {
                 if (selectedEtat != null)
                 {
-                    selectedFiche.UnEtat.Id = selectedEtat.Id;
+                    FicheFrais laFicheFrais = new FicheFrais(selectedFiche.UnVisiteur,selectedFiche.Mois,selectedFiche.NbJustificatifs,selectedFiche.MontantValide,selectedFiche.DateModif,selectedFiche.UnEtat);
+                    laFicheFrais.UnEtat.Id = selectedEtat.Id;
+                    vmDaoFicheFrais.Update(laFicheFrais);
                 }
                 vmDaoFicheFrais.Update(selectedFiche);
                 foreach (LigneFraisForfait lff in ListLignesFraisForfait)

@@ -42,5 +42,9 @@ namespace GSBFraisModel.Buisness
                 libelle = value;
             }
         }
+        public override string ToString()
+        {
+            return libelle;
+        }
     }
 }
