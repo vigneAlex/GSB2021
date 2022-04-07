@@ -107,7 +107,7 @@ namespace GSBFraisModel.Data
         {
             DataRow result = this.thedbal.SelectById2("FicheFrais", idVisiteur, mois);
             Visiteur unVisiteur = unDaoVisiteur.SelectById(idVisiteur);
-            Etat unEtat = unDaoEtat.SelectById((string)result["id"]);
+            Etat unEtat = unDaoEtat.SelectById((string)result["idEtat"]);
             return new FicheFrais(unVisiteur, (string)result["mois"], (int)result["nbJustificatifs"], (decimal)result["montantValide"], (DateTime)result["dateModif"], unEtat);
 
             

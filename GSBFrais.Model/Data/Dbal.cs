@@ -154,7 +154,7 @@ namespace GSBFraisModel.Data
 
         public DataRow SelectById2(string table, string id, string mois)
         {
-            string query = "SELECT * FROM " + table + " WHERE idVisiteur = '" + id + " AND mois = " + mois + "'";
+            string query = "SELECT * FROM " + table + " WHERE idVisiteur = '" + id + "' AND mois = '" + mois + "'";
             DataSet dataset = RQuery(query);
             return dataset.Tables[0].Rows[0];
         }

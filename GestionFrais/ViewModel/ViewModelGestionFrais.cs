@@ -49,9 +49,9 @@ namespace GestionFrais.ViewModel
         public ObservableCollection<Etat> ListEtat { get { return listEtat; } set { listEtat = value; } }
 
         public ObservableCollection<FraisForfait> ListFraisForfait { get { return listFraisForfait; } set { listFraisForfait = value; } }
-        public ObservableCollection<LigneFraisForfait> ListLignesFraisForfait { get { return listLignesFraisForfait; } set { listLignesFraisForfait = value;} }
+        public ObservableCollection<LigneFraisForfait> ListLignesFraisForfait { get { return listLignesFraisForfait; } set { listLignesFraisForfait = value; } }
 
-        public ObservableCollection<LigneFraisHorsForfait> ListLignesFraisHorsForfait { get { return listLignesFraisHorsForfait; } set { listLignesFraisHorsForfait = value;} }
+        public ObservableCollection<LigneFraisHorsForfait> ListLignesFraisHorsForfait { get { return listLignesFraisHorsForfait; } set { listLignesFraisHorsForfait = value; } }
 
         public string SelectedMois
         {
@@ -81,7 +81,7 @@ namespace GestionFrais.ViewModel
             {
                 selectedFiche = value;
                 OnPropertyChanged("SelectedFiche");
-                if(selectedFiche != null)
+                if (selectedFiche != null)
                 {
                     SuiviEtat = selectedFiche.UnEtat.Libelle;
                     listLignesFraisForfait = new ObservableCollection<LigneFraisForfait>(selectedFiche.LesLigneFraisForfait);
@@ -96,7 +96,7 @@ namespace GestionFrais.ViewModel
                     listLignesFraisHorsForfait = null;
                     OnPropertyChanged("ListLignesFraisForfait");
                     OnPropertyChanged("ListLignesFraisHorsForfait");
-                }        
+                }
             }
         }
 
@@ -182,7 +182,7 @@ namespace GestionFrais.ViewModel
             }
         }
 
-        
+
 
         public string SuiviEtat
         {
@@ -224,9 +224,9 @@ namespace GestionFrais.ViewModel
 
         private void ValiderFicheFrais()
         {
-            if(selectedFiche != null)
+            if (selectedFiche != null)
             {
-                if(SelectedFiche.UnEtat.Id != "CL" && SelectedFiche.UnEtat.Id != "RB")
+                if (SelectedFiche.UnEtat.Id != "CL" && SelectedFiche.UnEtat.Id != "RB")
                 {
                     selectedFiche.UnEtat.Id = "VA";
                     SelectedFiche.UnEtat.Libelle = "Validée et mise en paiement";
@@ -236,7 +236,7 @@ namespace GestionFrais.ViewModel
 
                 }
             }
-            
+
         }
 
         public ViewModelGestionFrais(DaoFicheFrais thedaoFicheFrais, DaoFraisForfait thedaoFraisForfait, DaoLigneFraisForfait thedaoLigneFraisForfait, DaoLigneFraisHorsForfait thedaoLigneFraisHorsForfait, DaoEtat theDaoEtat, DaoVisiteurs theDaoVisiteur)
@@ -255,13 +255,17 @@ namespace GestionFrais.ViewModel
 
         private void UpdateLesFichesFrais()
         {
-            if(selectedFiche != null)
+            if (selectedFiche != null)
             {
                 if (selectedEtat != null)
                 {
-                    FicheFrais laFicheFrais = new FicheFrais(selectedFiche.UnVisiteur,selectedFiche.Mois,selectedFiche.NbJustificatifs,selectedFiche.MontantValide,selectedFiche.DateModif,selectedFiche.UnEtat);
+                    FicheFrais laFicheFrais = new FicheFrais(selectedFiche.UnVisiteur, selectedFiche.Mois, selectedFiche.NbJustificatifs, selectedFiche.MontantValide, selectedFiche.DateModif, selectedFiche.UnEtat);
                     laFicheFrais.UnEtat.Id = selectedEtat.Id;
+                    selectedFiche.UnEtat.Id = selectedEtat.Id;
+                    SelectedFiche.UnEtat.Libelle = selectedEtat.Libelle;      
                     vmDaoFicheFrais.Update(laFicheFrais);
+                    OnPropertyChanged("SuiviEtat");
+
                 }
                 vmDaoFicheFrais.Update(selectedFiche);
                 foreach (LigneFraisForfait lff in ListLignesFraisForfait)
@@ -272,44 +276,34 @@ namespace GestionFrais.ViewModel
                 {
                     vmDaoLigneFraisHorsForfait.Update(lfhf);
                 }
+                
             }
-            
+
         }
 
         private void RefuserLaLigne()
         {
-            if (selectedLigneFraisForfait != null && selectedLigneFraisHorsForfait == null)
-            {
-                vmDaoLigneFraisForfait.Delete(selectedLigneFraisForfait);
-                ListLignesFraisForfait.Remove(selectedLigneFraisForfait);
-                selectedFiche.LesLigneFraisForfait = new List<LigneFraisForfait>(ListLignesFraisForfait);
-
-            }
-            else if (selectedLigneFraisHorsForfait != null && selectedLigneFraisForfait == null)
+            if (selectedLigneFraisHorsForfait != null && selectedLigneFraisForfait == null)
             {
                 vmDaoLigneFraisHorsForfait.Delete(selectedLigneFraisHorsForfait);
                 ListLignesFraisHorsForfait.Remove(selectedLigneFraisHorsForfait);
                 selectedFiche.LesLigneFraisHorsForfait = new List<LigneFraisHorsForfait>(ListLignesFraisHorsForfait);
             }
-            
+
         }
         private void ReporterLigne()
         {
-            bool verif = false;
             DateTime today = DateTime.Now;
             string date = today.ToString("yyyyMM");
-            if (selectedLigneFraisHorsForfait != null && selectedLigneFraisForfait == null)
+            if (SelectedLigneFraisHorsForfait != null)
             {
-                foreach (FicheFrais ff in ListFicheFrais) {
-                    if (ff.Mois == date && ff.UnVisiteur.Id == selectedLigneFraisHorsForfait.IdVisiteur)
-                    {
-                        LigneFraisHorsForfait laLfhf = new LigneFraisHorsForfait(selectedLigneFraisHorsForfait.Id, selectedLigneFraisHorsForfait.IdVisiteur, date, selectedLigneFraisHorsForfait.Libelle, selectedLigneFraisHorsForfait.Date, selectedLigneFraisHorsForfait.Montant);
-                        vmDaoLigneFraisHorsForfait.Update(laLfhf);
-                        ListLignesFraisHorsForfait.Remove(selectedLigneFraisHorsForfait);
-                        verif = true;
-                    }
+                if (vmDaoFicheFrais.SelectById(selectedLigneFraisHorsForfait.IdVisiteur, selectedLigneFraisHorsForfait.Mois) != null)
+                {
+                    LigneFraisHorsForfait laLfhf = new LigneFraisHorsForfait(selectedLigneFraisHorsForfait.Id, selectedLigneFraisHorsForfait.IdVisiteur, date, selectedLigneFraisHorsForfait.Libelle, selectedLigneFraisHorsForfait.Date, selectedLigneFraisHorsForfait.Montant);
+                    vmDaoLigneFraisHorsForfait.Update(laLfhf);
+                    ListLignesFraisHorsForfait.Remove(selectedLigneFraisHorsForfait);
                 }
-                if(verif == false)
+                else
                 {
                     FicheFrais laFf = new FicheFrais(selectedFiche.UnVisiteur, date, selectedFiche.NbJustificatifs, selectedFiche.MontantValide, selectedFiche.DateModif, selectedFiche.UnEtat);
                     LigneFraisHorsForfait laLfhf = new LigneFraisHorsForfait(selectedLigneFraisHorsForfait.Id, selectedLigneFraisHorsForfait.IdVisiteur, date, selectedLigneFraisHorsForfait.Libelle, selectedLigneFraisHorsForfait.Date, selectedLigneFraisHorsForfait.Montant);
