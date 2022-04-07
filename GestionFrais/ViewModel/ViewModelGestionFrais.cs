@@ -16,6 +16,7 @@ namespace GestionFrais.ViewModel
         private ObservableCollection<FicheFrais> listFicheFrais;
         private ObservableCollection<string> listMois;
         private ObservableCollection<Etat> listEtat;
+        private ObservableCollection<FicheFrais> lesFicheFrais;
         private ObservableCollection<FraisForfait> listFraisForfait;
         private ObservableCollection<LigneFraisForfait> listLignesFraisForfait;
         private ObservableCollection<LigneFraisHorsForfait> listLignesFraisHorsForfait;
@@ -27,17 +28,21 @@ namespace GestionFrais.ViewModel
         private LigneFraisHorsForfait selectedLigneFraisHorsForfait;
         private Etat selectedEtat;
         private string idEtat;
+        private string filtreNom;
 
         private ICommand updateFicheFrais;
+        private ICommand validerFiche;
         private ICommand refusLigne;
         private ICommand report;
 
+        private Dbal leDbal;
         private DaoEtat vmDaoEtat;
         private DaoFicheFrais vmDaoFicheFrais;
         private DaoFraisForfait vmDaoFraisForfait;
         private DaoLigneFraisForfait vmDaoLigneFraisForfait;
         private DaoVisiteurs vmDaoVisiteur;
         private DaoLigneFraisHorsForfait vmDaoLigneFraisHorsForfait;
+
         public ObservableCollection<Visiteur> ListVisiteurs { get { return listVisiteurs; } set { listVisiteurs = value; } }
         public ObservableCollection<FicheFrais> ListFicheFrais { get { return listFicheFrais; } set { listFicheFrais = value; } }
         public ObservableCollection<string> ListMois { get { return listMois; } set { listMois = value; } }
@@ -192,18 +197,60 @@ namespace GestionFrais.ViewModel
             }
         }
 
-        
+        public ICommand ValiderFiche
+        {
+            get
+            {
+                if (this.validerFiche == null)
+                {
+                    this.validerFiche = new RelayCommand(() => ValiderFicheFrais(), () => true);
+                }
+                return this.validerFiche;
+            }
+        }
 
-        public ViewModelGestionFrais(DaoFicheFrais thedaoFicheFrais, DaoFraisForfait thedaoFraisForfait, DaoLigneFraisForfait thedaoLigneFraisForfait, DaoLigneFraisHorsForfait thedaoLigneFraisHorsForfait, DaoEtat theDaoEtat)
+        public ObservableCollection<FicheFrais> LesFicheFrais
+        {
+            get
+            {
+                return lesFicheFrais;
+            }
+
+            set
+            {
+                lesFicheFrais = value;
+            }
+        }
+
+        private void ValiderFicheFrais()
+        {
+            if(selectedFiche != null)
+            {
+                if(SelectedFiche.UnEtat.Id != "CL" && SelectedFiche.UnEtat.Id != "RB")
+                {
+                    selectedFiche.UnEtat.Id = "VA";
+                    SelectedFiche.UnEtat.Libelle = "Validée et mise en paiement";
+                    vmDaoFicheFrais.Update(SelectedFiche);
+                    SuiviEtat = SelectedFiche.UnEtat.Libelle;
+                    OnPropertyChanged("SuiviEtat");
+
+                }
+            }
+            
+        }
+
+        public ViewModelGestionFrais(DaoFicheFrais thedaoFicheFrais, DaoFraisForfait thedaoFraisForfait, DaoLigneFraisForfait thedaoLigneFraisForfait, DaoLigneFraisHorsForfait thedaoLigneFraisHorsForfait, DaoEtat theDaoEtat, DaoVisiteurs theDaoVisiteur)
         {
             vmDaoFicheFrais = thedaoFicheFrais;
             vmDaoLigneFraisForfait = thedaoLigneFraisForfait;
             vmDaoLigneFraisHorsForfait = thedaoLigneFraisHorsForfait;
             vmDaoEtat = theDaoEtat;
+            vmDaoVisiteur = theDaoVisiteur;
 
             listEtat = new ObservableCollection<Etat>(theDaoEtat.SelectListEtat());
             listMois = new ObservableCollection<string>(thedaoFicheFrais.SelectListMois());
             listFicheFrais = new ObservableCollection<FicheFrais>(thedaoFicheFrais.SelectAll());
+            listVisiteurs = new ObservableCollection<Visiteur>(theDaoVisiteur.SelectAll());
         }
 
         private void UpdateLesFichesFrais()

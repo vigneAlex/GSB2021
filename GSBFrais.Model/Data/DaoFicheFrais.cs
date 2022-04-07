@@ -112,6 +112,27 @@ namespace GSBFraisModel.Data
 
             
         }
+
+        public List<FicheFrais> SelectByNom(string unId)
+        {
+            List<FicheFrais> listFicheFrais = new List<FicheFrais>();
+            DataTable myTable = this.thedbal.SelectByField("FicheFrais", "idVisiteur = '" + unId + "'");
+            List<LigneFraisForfait> lesLignesFraisForfaits = new List<LigneFraisForfait>();
+            List<LigneFraisHorsForfait> lesLignesFraisHorsForfaits = new List<LigneFraisHorsForfait>();
+
+            foreach (DataRow r in myTable.Rows)
+            {
+                Visiteur leVisiteur = unDaoVisiteur.SelectById(unId);
+                Etat unEtat = unDaoEtat.SelectById((string)r["idEtat"]);
+                FicheFrais uneFicheFrais = new FicheFrais(leVisiteur, unId, (int)r["nbJustificatifs"], (decimal)r["montantValide"], (DateTime)r["dateModif"], unEtat);
+                lesLignesFraisForfaits = unDaoLigneFraisForfait.SelectByFicheFrais(uneFicheFrais);
+                lesLignesFraisHorsForfaits = unDaoLigneFraisHorsForfait.SelectByFicheFrais(uneFicheFrais);
+                uneFicheFrais.LesLigneFraisForfait = lesLignesFraisForfaits;
+                uneFicheFrais.LesLigneFraisHorsForfait = lesLignesFraisHorsForfaits;
+                listFicheFrais.Add(uneFicheFrais);
+            }
+            return listFicheFrais;
+        }
     }
 
 }

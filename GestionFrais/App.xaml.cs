@@ -30,11 +30,12 @@ namespace GSB
             thedaoetat = new DaoEtat(thedbal);
             thedaofraisforfait = new DaoFraisForfait(thedbal);
             thedaofichefrais = new DaoFicheFrais(thedbal, thedaovisiteurs, thedaoetat, thedaolignefraisforfait, thedaolignefraishorsforfait);
+            thedaovisiteurs = new DaoVisiteurs(thedbal);
             
             
 
             // Create the startup window
-            GestionFrais wnd = new GestionFrais(thedaoetat,thedaolignefraisforfait,thedaolignefraishorsforfait,thedaovisiteurs,thedaofichefrais,thedaofraisforfait);
+            GestionFrais wnd = new GestionFrais(thedaoetat,thedaolignefraisforfait,thedaolignefraishorsforfait,thedaovisiteurs,thedaofichefrais,thedaofraisforfait, thedaovisiteurs);
             wnd.Show();
 
         }

@@ -22,23 +22,10 @@ namespace GSB
     /// </summary>
     public partial class GestionFrais : Window
     {
-        public GestionFrais(DaoEtat theDaoEtat, DaoLigneFraisForfait thedaolignefraisforfait, DaoLigneFraisHorsForfait thedaolignefraishorsforfait, DaoVisiteurs thedaovisiteurs, DaoFicheFrais thedaoFicheFrais, DaoFraisForfait thedaoFraisForfait)
+        public GestionFrais(DaoEtat theDaoEtat, DaoLigneFraisForfait thedaolignefraisforfait, DaoLigneFraisHorsForfait thedaolignefraishorsforfait, DaoVisiteurs thedaovisiteurs, DaoFicheFrais thedaoFicheFrais, DaoFraisForfait thedaoFraisForfait, DaoVisiteurs theDaoVisiteur)
         {
             InitializeComponent();
-            mainGrid.DataContext = new ViewModelGestionFrais(thedaoFicheFrais, thedaoFraisForfait, thedaolignefraisforfait, thedaolignefraishorsforfait, theDaoEtat);
-        }
-
-        private void btnSuivrePaiement_Click(object sender, RoutedEventArgs e)
-        {
-            if (ListBox.SelectedItem != null)
-            {
-                suivi.Visibility = Visibility.Visible;
-            }  
-        }
-
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            suivi.Visibility = Visibility.Hidden;
+            mainGrid.DataContext = new ViewModelGestionFrais(thedaoFicheFrais, thedaoFraisForfait, thedaolignefraisforfait, thedaolignefraishorsforfait, theDaoEtat, theDaoVisiteur);
         }
     }
 }
