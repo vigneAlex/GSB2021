@@ -226,7 +226,7 @@ namespace GestionFrais.ViewModel
         {
             if (selectedFiche != null)
             {
-                if (SelectedFiche.UnEtat.Id != "CL" && SelectedFiche.UnEtat.Id != "RB")
+                if (SelectedFiche.UnEtat.Id != "RB")
                 {
                     selectedFiche.UnEtat.Id = "VA";
                     SelectedFiche.UnEtat.Libelle = "Validée et mise en paiement";
